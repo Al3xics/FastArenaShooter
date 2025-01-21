@@ -13,4 +13,17 @@ UCLASS()
 class FASTARENASHOOTER_API AFASGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	AFASGameMode();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Game Mode Info")
+	// UUserWidget* WidgetPlayerInterface;
+	//
+	// UPROPERTY(EditAnywhere, Category="Game Mode Info")
+	// TSubclassOf<UUserWidget> WidgetPlayerInterfaceClass;
 };

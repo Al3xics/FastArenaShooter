@@ -38,8 +38,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* LookAction;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="Player Info")
 	ACharacter* ControlledCharacter;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Info")
+	float MaxHealth = 100.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Player Info")
+	float CurrentHealth;
 
 	UFUNCTION()
 	void MoveFunc(const FInputActionValue& Value);

@@ -25,6 +25,9 @@ void AFASPlayerController::BeginPlay()
 			PlayerSubsystem->AddMappingContext(MappingContext.LoadSynchronous(), 0);
 		}
 	}
+
+	// Set current health to max health
+	CurrentHealth = MaxHealth;
 }
 
 void AFASPlayerController::SetupInputComponent()

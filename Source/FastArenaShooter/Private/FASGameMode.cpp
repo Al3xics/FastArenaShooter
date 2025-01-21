@@ -2,3 +2,17 @@
 
 
 #include "FASGameMode.h"
+
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
+
+AFASGameMode::AFASGameMode()
+{
+}
+
+void AFASGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// CreateWidget<UUserWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), WidgetPlayerInterface->GetClass());
+}
