@@ -21,14 +21,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	int JumpCount = 2;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float JumpPower = 300.f;
-
 public:
 	virtual void SetupInputComponent() override;
+
+	virtual void OnPossess(APawn *InPawn) override;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> MappingContext;
@@ -42,11 +38,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* LookAction;
 
+	UPROPERTY()
+	ACharacter* ControlledCharacter;
+
 	UFUNCTION()
 	void MoveFunc(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void JumpFunc(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void StopJumpingFunc(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void LookFunc(const FInputActionValue& Value);

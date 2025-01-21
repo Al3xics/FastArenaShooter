@@ -34,7 +34,15 @@ void AFASPlayerController::SetupInputComponent()
 	UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(InputComponent);
 	EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFASPlayerController::MoveFunc);
 	EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &AFASPlayerController::JumpFunc);
+	EnhancedInput->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFASPlayerController::StopJumpingFunc);
 	EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFASPlayerController::LookFunc);
+}
+
+void AFASPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	ControlledCharacter = Cast<ACharacter>(GetPawn());
 }
 
 void AFASPlayerController::MoveFunc(const FInputActionValue& Value)
@@ -48,16 +56,16 @@ void AFASPlayerController::MoveFunc(const FInputActionValue& Value)
 
 void AFASPlayerController::JumpFunc(const FInputActionValue& Value)
 {
-	bool Jump = Value.Get<bool>();
 	// GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, TEXT("Jump"));
+	
+	ControlledCharacter->Jump();
+}
 
-	if (JumpCount > 0)
-	{
-		ACharacter* FASCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		FASCharacter->GetCharacterMovement()->AddImpulse(JumpPower * GetPawn()->GetActorUpVector());
-		--JumpCount;
-		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, TEXT("Jump"));
-	}
+void AFASPlayerController::StopJumpingFunc(const FInputActionValue& Value)
+{
+	// GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, TEXT("Jump"));
+	
+	ControlledCharacter->StopJumping();
 }
 
 void AFASPlayerController::LookFunc(const FInputActionValue& Value)
