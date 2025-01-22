@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FASCharacterBase.h"
 #include "GameFramework/Character.h"
 #include "FASPlayer.generated.h"
 
 UCLASS()
-class FASTARENASHOOTER_API AFASPlayer : public ACharacter
+class FASTARENASHOOTER_API AFASPlayer : public AFASCharacterBase
 {
 	GENERATED_BODY()
 
