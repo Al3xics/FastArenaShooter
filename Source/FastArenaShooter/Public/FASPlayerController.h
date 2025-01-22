@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FASCharacterBase.h"
 #include "InputMappingContext.h"
 #include "GameFramework/PlayerController.h"
 #include "FASPlayerController.generated.h"
@@ -26,6 +27,8 @@ public:
 
 	virtual void OnPossess(APawn *InPawn) override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> MappingContext;
 
@@ -38,8 +41,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* LookAction;
 
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* PossessAction;
+
 	UPROPERTY(VisibleAnywhere, Category="Player Info")
-	ACharacter* ControlledCharacter;
+	AFASCharacterBase* ControlledCharacter;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Info")
 	float MaxHealth = 100.0f;
@@ -47,8 +53,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Player Info")
 	float CurrentHealth;
 
-	UPROPERTY(EditAnywhere, Category="Player Infor")
+	UPROPERTY(EditAnywhere, Category="Player Info")
 	float MouseSensitivity = 0.5f;
+
+	UPROPERTY(EditAnywhere, Category="Player Info")
+	float PossessionDistance = 1000.f;
+
+	UPROPERTY(VisibleAnywhere, Category="Player Info")
+	AFASCharacterBase* OtherCharacter = nullptr;
 
 	UFUNCTION()
 	void MoveFunc(const FInputActionValue& Value);
@@ -61,5 +73,8 @@ public:
 
 	UFUNCTION()
 	void LookFunc(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void PossessFunc(const FInputActionValue& Value);
 	
 };
