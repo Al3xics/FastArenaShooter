@@ -5,9 +5,11 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "FASCharacterBase.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AFASPlayerController::AFASPlayerController()
 {
@@ -39,13 +41,21 @@ void AFASPlayerController::SetupInputComponent()
 	EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &AFASPlayerController::JumpFunc);
 	EnhancedInput->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFASPlayerController::StopJumpingFunc);
 	EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFASPlayerController::LookFunc);
+	EnhancedInput->BindAction(PossessAction, ETriggerEvent::Triggered, this, &AFASPlayerController::PossessFunc);
 }
 
 void AFASPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	ControlledCharacter = Cast<ACharacter>(GetPawn());
+	ControlledCharacter = Cast<AFASCharacterBase>(GetPawn());
+}
+
+void AFASPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	CheckCanPossess();
 }
 
 void AFASPlayerController::MoveFunc(const FInputActionValue& Value)
@@ -78,4 +88,46 @@ void AFASPlayerController::LookFunc(const FInputActionValue& Value)
 	
 	GetPawn()->AddControllerYawInput(LookAxisVector.X * MouseSensitivity);
 	GetPawn()->AddControllerPitchInput(LookAxisVector.Y * MouseSensitivity);
+}
+
+void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
+{
+	if (OtherCharacter != nullptr)
+	{
+		UnPossess();
+		Possess(OtherCharacter);
+		ControlledCharacter = OtherCharacter;
+	}
+}
+
+void AFASPlayerController::CheckCanPossess()
+{
+	
+
+	// Used for the LineTrace
+	FVector OutLocation;
+	FRotator OutRotation;
+	ControlledCharacter->GetActorEyesViewPoint(OutLocation, OutRotation);
+	FVector StartLocation = FVector(ControlledCharacter->GetFirstPersonCameraComponent()->GetComponentLocation());
+	FVector EndLocation = FVector(OutLocation + (UKismetMathLibrary::GetForwardVector(OutRotation) * PossessionDistance));
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(ControlledCharacter);
+	FHitResult OutHit;
+	const bool ValueHit = UKismetSystemLibrary::LineTraceSingle(GetWorld(), StartLocation, EndLocation, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true, FLinearColor::Red, FLinearColor::Green, 0.2f);
+	
+	if (ValueHit)
+	{
+		if (AFASCharacterBase* FASCharacterBase = Cast<AFASCharacterBase>(OutHit.GetActor()))
+		{
+			OtherCharacter = FASCharacterBase;
+		}
+		else
+		{
+			OtherCharacter = nullptr;
+		}
+	}
+	else
+	{
+		OtherCharacter = nullptr;
+	}
 }
