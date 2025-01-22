@@ -113,7 +113,7 @@ void AFASPlayerController::CheckCanPossess()
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(ControlledCharacter);
 	FHitResult OutHit;
-	const bool ValueHit = UKismetSystemLibrary::LineTraceSingle(GetWorld(), StartLocation, EndLocation, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Green, 0.2f);
+	const bool ValueHit = UKismetSystemLibrary::LineTraceSingle(GetWorld(), StartLocation, EndLocation, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true, FLinearColor::Red, FLinearColor::Green, 0.2f);
 	
 	if (ValueHit)
 	{

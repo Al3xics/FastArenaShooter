@@ -3,9 +3,6 @@
 
 #include "FASGameMode.h"
 
-#include "Blueprint/UserWidget.h"
-#include "Kismet/GameplayStatics.h"
-
 AFASGameMode::AFASGameMode()
 {
 }
