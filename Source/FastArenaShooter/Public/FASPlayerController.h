@@ -76,5 +76,8 @@ public:
 
 	UFUNCTION()
 	void PossessFunc(const FInputActionValue& Value);
+
+	UFUNCTION(BlueprintCallable, Category="Controller")
+	void CheckCanPossess();
 	
 };

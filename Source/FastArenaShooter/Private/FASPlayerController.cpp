@@ -55,32 +55,7 @@ void AFASPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Used for the LineTrace
-	FVector OutLocation;
-	FRotator OutRotation;
-	ControlledCharacter->GetActorEyesViewPoint(OutLocation, OutRotation);
-	FVector StartLocation = FVector(ControlledCharacter->GetFirstPersonCameraComponent()->GetComponentLocation());
-	FVector EndLocation = FVector(OutLocation + (UKismetMathLibrary::GetForwardVector(OutRotation) * PossessionDistance));
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(ControlledCharacter);
-	FHitResult OutHit;
-	const bool ValueHit = UKismetSystemLibrary::LineTraceSingle(GetWorld(), StartLocation, EndLocation, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Green, 0.2f);
-	
-	if (ValueHit)
-	{
-		if (AFASCharacterBase* FASCharacterBase = Cast<AFASCharacterBase>(OutHit.GetActor()))
-		{
-			OtherCharacter = FASCharacterBase;
-		}
-		else
-		{
-			OtherCharacter = nullptr;
-		}
-	}
-	else
-	{
-		OtherCharacter = nullptr;
-	}
+	CheckCanPossess();
 }
 
 void AFASPlayerController::MoveFunc(const FInputActionValue& Value)
@@ -122,5 +97,37 @@ void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
 		UnPossess();
 		Possess(OtherCharacter);
 		ControlledCharacter = OtherCharacter;
+	}
+}
+
+void AFASPlayerController::CheckCanPossess()
+{
+	
+
+	// Used for the LineTrace
+	FVector OutLocation;
+	FRotator OutRotation;
+	ControlledCharacter->GetActorEyesViewPoint(OutLocation, OutRotation);
+	FVector StartLocation = FVector(ControlledCharacter->GetFirstPersonCameraComponent()->GetComponentLocation());
+	FVector EndLocation = FVector(OutLocation + (UKismetMathLibrary::GetForwardVector(OutRotation) * PossessionDistance));
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(ControlledCharacter);
+	FHitResult OutHit;
+	const bool ValueHit = UKismetSystemLibrary::LineTraceSingle(GetWorld(), StartLocation, EndLocation, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Green, 0.2f);
+	
+	if (ValueHit)
+	{
+		if (AFASCharacterBase* FASCharacterBase = Cast<AFASCharacterBase>(OutHit.GetActor()))
+		{
+			OtherCharacter = FASCharacterBase;
+		}
+		else
+		{
+			OtherCharacter = nullptr;
+		}
+	}
+	else
+	{
+		OtherCharacter = nullptr;
 	}
 }
