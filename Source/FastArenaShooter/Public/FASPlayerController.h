@@ -47,6 +47,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Player Info")
 	float CurrentHealth;
 
+	UPROPERTY(EditAnywhere, Category="Player Infor")
+	float MouseSensitivity = 0.5f;
+
 	UFUNCTION()
 	void MoveFunc(const FInputActionValue& Value);
 

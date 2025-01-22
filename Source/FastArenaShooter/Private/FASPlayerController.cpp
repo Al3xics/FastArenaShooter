@@ -76,6 +76,6 @@ void AFASPlayerController::LookFunc(const FInputActionValue& Value)
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 	// GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, TEXT("Look"));
 	
-	GetPawn()->AddControllerYawInput(LookAxisVector.X);
-	GetPawn()->AddControllerPitchInput(LookAxisVector.Y);
+	GetPawn()->AddControllerYawInput(LookAxisVector.X * MouseSensitivity);
+	GetPawn()->AddControllerPitchInput(LookAxisVector.Y * MouseSensitivity);
 }
