@@ -13,6 +13,5 @@ AFASGameMode::AFASGameMode()
 void AFASGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// CreateWidget<UUserWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), WidgetPlayerInterface->GetClass());
+	
 }
