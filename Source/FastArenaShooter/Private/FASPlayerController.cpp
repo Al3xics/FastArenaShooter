@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FASCharacterBase.h"
+#include "FASEnemyBase.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -42,6 +44,7 @@ void AFASPlayerController::SetupInputComponent()
 	EnhancedInput->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFASPlayerController::StopJumpingFunc);
 	EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFASPlayerController::LookFunc);
 	EnhancedInput->BindAction(PossessAction, ETriggerEvent::Triggered, this, &AFASPlayerController::PossessFunc);
+	EnhancedInput->BindAction(UnPossessAction, ETriggerEvent::Triggered, this, &AFASPlayerController::PossessFunc);
 }
 
 void AFASPlayerController::OnPossess(APawn* InPawn)
@@ -92,42 +95,81 @@ void AFASPlayerController::LookFunc(const FInputActionValue& Value)
 
 void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
 {
-	if (OtherCharacter != nullptr)
+	const AFASEnemyBase* Enemy = Cast<AFASEnemyBase>(GetPawn());
+	
+	// If OtherCharacter is null && not in player, then spawn player
+	// Else (OtherCharacter not null), then possess enemy
+	if (OtherCharacter == nullptr && Enemy)
 	{
-		UnPossess();
-		Possess(OtherCharacter);
-		ControlledCharacter = OtherCharacter;
+		const FVector PlayerSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToFrontSpawn));
+		const FRotator PlayerSpawnRotation = FRotator(Enemy->GetActorRotation());
+		const FVector PlayerSpawnScale = FVector(Enemy->GetCapsuleComponent()->GetRelativeTransform().GetScale3D());
+		const FTransform PlayerTransform = UKismetMathLibrary::MakeTransform(PlayerSpawnLocation, PlayerSpawnRotation, PlayerSpawnScale);
+		FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
+		SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+		SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
+		SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
+		MoveCameraInDirectionOfPossession(SpawnedPlayerActor);
+	}
+	else if (OtherCharacter != nullptr)
+	{
+		bIsPossessingAnyPawn = true;
+		MoveCameraInDirectionOfPossession(OtherCharacter);
 	}
 }
 
 void AFASPlayerController::CheckCanPossess()
 {
-	
-
-	// Used for the LineTrace
-	FVector OutLocation;
-	FRotator OutRotation;
-	ControlledCharacter->GetActorEyesViewPoint(OutLocation, OutRotation);
-	FVector StartLocation = FVector(ControlledCharacter->GetFirstPersonCameraComponent()->GetComponentLocation());
-	FVector EndLocation = FVector(OutLocation + (UKismetMathLibrary::GetForwardVector(OutRotation) * PossessionDistance));
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(ControlledCharacter);
-	FHitResult OutHit;
-	const bool ValueHit = UKismetSystemLibrary::LineTraceSingle(GetWorld(), StartLocation, EndLocation, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true, FLinearColor::Red, FLinearColor::Green, 0.2f);
-	
-	if (ValueHit)
+	if (!bIsPossessingAnyPawn)
 	{
-		if (AFASCharacterBase* FASCharacterBase = Cast<AFASCharacterBase>(OutHit.GetActor()))
+		// Used for the LineTrace
+		FVector OutLocation;
+		FRotator OutRotation;
+		ControlledCharacter->GetActorEyesViewPoint(OutLocation, OutRotation);
+		const FVector StartLocation = FVector(ControlledCharacter->GetFirstPersonCameraComponent()->GetComponentLocation());
+		const FVector EndLocation = FVector(OutLocation + (UKismetMathLibrary::GetForwardVector(OutRotation) * PossessionDistance));
+		TArray<AActor*> ActorsToIgnore;
+		ActorsToIgnore.Add(ControlledCharacter);
+		FHitResult OutHit;
+		const bool ValueHit = UKismetSystemLibrary::LineTraceSingle(GetWorld(), StartLocation, EndLocation, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true, FLinearColor::Red, FLinearColor::Green, 0.2f);
+	
+		if (ValueHit)
 		{
-			OtherCharacter = FASCharacterBase;
+			if (AFASCharacterBase* FASCharacterBase = Cast<AFASCharacterBase>(OutHit.GetActor()))
+			{
+				OtherCharacter = FASCharacterBase;
+			}
+			else
+			{
+				OtherCharacter = nullptr;
+			}
 		}
 		else
 		{
 			OtherCharacter = nullptr;
 		}
 	}
-	else
+}
+
+void AFASPlayerController::PossessEnemy()
+{
+	AActor* Old = GetPawn();
+	
+	UnPossess();
+	Possess(OtherCharacter);
+	ControlledCharacter = OtherCharacter;
+	bIsPossessingAnyPawn = false;
+
+	if (AFASPlayer* OldFASPlayer = Cast<AFASPlayer>(Old))
 	{
-		OtherCharacter = nullptr;
+		OldFASPlayer->Destroy();
 	}
+}
+
+void AFASPlayerController::PossessPlayer()
+{
+	UnPossess();
+	Possess(SpawnedPlayerActor);
+	SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(true, true);
 }
