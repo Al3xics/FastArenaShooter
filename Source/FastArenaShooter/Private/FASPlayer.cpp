@@ -3,12 +3,15 @@
 
 #include "FASPlayer.h"
 
+#include "Components/CapsuleComponent.h"
+
 
 // Sets default values
 AFASPlayer::AFASPlayer()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	GetCapsuleComponent()->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
 }
 
 // Called when the game starts or when spawned
