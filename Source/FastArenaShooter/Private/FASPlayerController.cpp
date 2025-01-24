@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FASCharacterBase.h"
+#include "FASEnemyBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -94,27 +95,27 @@ void AFASPlayerController::LookFunc(const FInputActionValue& Value)
 
 void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
 {
-	AFASPlayer* P = Cast<AFASPlayer>(GetPawn());
+	const AFASEnemyBase* Enemy = Cast<AFASEnemyBase>(GetPawn());
 	
 	// If OtherCharacter is null && not in player, then spawn player
 	// Else (OtherCharacter not null), then possess enemy
-	if (OtherCharacter == nullptr && Player)
+	if (OtherCharacter == nullptr && Enemy)
 	{
-		FVector PlayerSpawnLocation = FVector(P->GetActorLocation() + (P->GetActorForwardVector() * DistanceToFrontSpawn));
-		FRotator PlayerSpawnRotation = FRotator(P->GetActorRotation());
-		FVector PlayerSpawnScale = FVector(P->GetCapsuleComponent()->GetRelativeTransform().GetScale3D());
-		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+		const FVector PlayerSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToFrontSpawn));
+		const FRotator PlayerSpawnRotation = FRotator(Enemy->GetActorRotation());
+		const FVector PlayerSpawnScale = FVector(Enemy->GetCapsuleComponent()->GetRelativeTransform().GetScale3D());
+		const FTransform PlayerTransform = UKismetMathLibrary::MakeTransform(PlayerSpawnLocation, PlayerSpawnRotation, PlayerSpawnScale);
+		FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
+		SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
-		// Faire spawn ICI
+		SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
+		SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
+		MoveCameraInDirectionOfPossession(SpawnedPlayerActor);
 	}
 	else if (OtherCharacter != nullptr)
 	{
 		bIsPossessingAnyPawn = true;
 		MoveCameraInDirectionOfPossession(OtherCharacter);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "----------------Possessing FAILED !----------------");
 	}
 }
 
@@ -126,8 +127,8 @@ void AFASPlayerController::CheckCanPossess()
 		FVector OutLocation;
 		FRotator OutRotation;
 		ControlledCharacter->GetActorEyesViewPoint(OutLocation, OutRotation);
-		FVector StartLocation = FVector(ControlledCharacter->GetFirstPersonCameraComponent()->GetComponentLocation());
-		FVector EndLocation = FVector(OutLocation + (UKismetMathLibrary::GetForwardVector(OutRotation) * PossessionDistance));
+		const FVector StartLocation = FVector(ControlledCharacter->GetFirstPersonCameraComponent()->GetComponentLocation());
+		const FVector EndLocation = FVector(OutLocation + (UKismetMathLibrary::GetForwardVector(OutRotation) * PossessionDistance));
 		TArray<AActor*> ActorsToIgnore;
 		ActorsToIgnore.Add(ControlledCharacter);
 		FHitResult OutHit;
@@ -151,8 +152,8 @@ void AFASPlayerController::CheckCanPossess()
 	}
 }
 
-void AFASPlayerController::PossessPawn()
-{
+void AFASPlayerController::PossessEnemy()
+s{
 	AActor* Old = GetPawn();
 	
 	UnPossess();
@@ -166,7 +167,9 @@ void AFASPlayerController::PossessPawn()
 	}
 }
 
-void AFASPlayerController::UnPossessPawn()
+void AFASPlayerController::PossessPlayer()
 {
-	
+	UnPossess();
+	Possess(SpawnedPlayerActor);
+	SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(true, true);
 }

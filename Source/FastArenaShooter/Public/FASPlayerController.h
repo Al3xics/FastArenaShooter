@@ -49,7 +49,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* UnPossessAction;
 
-	UPROPERTY(VisibleAnywhere, Category="Player Info")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player Info")
 	AFASCharacterBase* ControlledCharacter;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Info")
@@ -71,10 +71,13 @@ public:
 	float DistanceToFrontSpawn = 300.0f;
 
 	UPROPERTY(EditAnywhere, Category="Player Info")
-	TSubclassOf<AFASPlayer> MyActorClass = AFASPlayer::StaticClass();
+	TSubclassOf<AFASPlayer> MyActorClass;
 
 	UPROPERTY()
 	bool bIsPossessingAnyPawn = false;
+
+	UPROPERTY()
+	AFASPlayer* SpawnedPlayerActor = nullptr;
 
 	UFUNCTION()
 	void MoveFunc(const FInputActionValue& Value);
@@ -95,10 +98,10 @@ public:
 	void CheckCanPossess();
 
 	UFUNCTION(BlueprintCallable, Category="Controller")
-	void PossessPawn();
+	void PossessEnemy();
 
 	UFUNCTION(BlueprintCallable, Category="Controller")
-	void UnPossessPawn();
+	void PossessPlayer();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Camera")
 	void MoveCameraInDirectionOfPossession(AFASCharacterBase* PawnToPossess);
