@@ -153,7 +153,7 @@ void AFASPlayerController::CheckCanPossess()
 }
 
 void AFASPlayerController::PossessEnemy()
-s{
+{
 	AActor* Old = GetPawn();
 	
 	UnPossess();

@@ -64,7 +64,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="Player Info")
 	float PossessionDistance = 1000.f;
 
-	UPROPERTY(VisibleAnywhere, Category="Player Info")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player Info")
 	AFASCharacterBase* OtherCharacter = nullptr;
 
 	UPROPERTY(EditAnywhere, Category="Player Info")
