@@ -38,8 +38,22 @@ void AFASSpawnerEnemyBase::SpawnEnemy()
 	FVector RandomSpawnLocation;
 	UNavigationSystemV1::K2_GetRandomReachablePointInRadius(GetWorld(), GetActorLocation(), RandomSpawnLocation, SphereCollision->GetScaledSphereRadius());
 	FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
-	SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+	SpawnParams->SpawnCollisionHandlingOverride = CollisionHandlingOverride;
 	
 	GetWorld()->SpawnActor<AFASEnemyBase>(EnemyClassToSpawn, RandomSpawnLocation, FRotator(0, 0, 0), *SpawnParams);
+	++TotalEnemy;
+
+	// Stop timer if max enemy reached for this type of enemy
+	if (TotalEnemy >= SpawnSettingsEnemy.MaxEnemy)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(SpawnerTimerHandle);
+	}
+	else
+	{
+		TimeElapsed += GetWorld()->GetDeltaSeconds();
+		const float NewSpawnRate = SpawnSettingsEnemy.GetCurrentSpawnRate(TimeElapsed);
+		GetWorld()->GetTimerManager().SetTimer(SpawnerTimerHandle, this, &AFASSpawnerEnemyBase::SpawnEnemy, NewSpawnRate, false);
+	}
+
 }
 
