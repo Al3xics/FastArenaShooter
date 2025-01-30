@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "FASEnemyBase.h"
 #include "GameFramework/Actor.h"
+#include "Enum/FASEnemyType.h"
+#include "Struct/FASEnemySpawnSettings.h"
 #include "FASSpawnerEnemyBase.generated.h"
 
 UCLASS()
@@ -29,6 +31,24 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
 	TSubclassOf<AFASEnemyBase> EnemyClassToSpawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
+	TEnumAsByte<EEnemyType> EnemyType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
+	ESpawnActorCollisionHandlingMethod CollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+	UPROPERTY()
+	FTimerHandle SpawnerTimerHandle;
+
+	UPROPERTY(VisibleAnywhere)
+	float TimeElapsed = 0.0f;
+
+	UPROPERTY()
+	FFASEnemySpawnSettings SpawnSettingsEnemy;
+
+	UPROPERTY()
+	int TotalEnemy = 0;
 	
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 	void SpawnEnemy();
