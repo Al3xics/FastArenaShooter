@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FASCharacterBase.h"
+#include "FASPlayer.h"
 #include "InputMappingContext.h"
 #include "GameFramework/PlayerController.h"
 #include "FASPlayerController.generated.h"
 
+class AFASPlayer;
 /**
  * 
  */
@@ -26,6 +29,8 @@ public:
 
 	virtual void OnPossess(APawn *InPawn) override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> MappingContext;
 
@@ -38,8 +43,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* LookAction;
 
-	UPROPERTY(VisibleAnywhere, Category="Player Info")
-	ACharacter* ControlledCharacter;
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* PossessAction;
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* UnPossessAction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player Info")
+	AFASCharacterBase* ControlledCharacter;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Info")
 	float MaxHealth = 100.0f;
@@ -47,8 +58,26 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Player Info")
 	float CurrentHealth;
 
-	UPROPERTY(EditAnywhere, Category="Player Infor")
+	UPROPERTY(EditAnywhere, Category="Player Info")
 	float MouseSensitivity = 0.5f;
+
+	UPROPERTY(EditAnywhere, Category="Player Info")
+	float PossessionDistance = 1000.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player Info")
+	AFASCharacterBase* OtherCharacter = nullptr;
+
+	UPROPERTY(EditAnywhere, Category="Player Info")
+	float DistanceToFrontSpawn = 300.0f;
+
+	UPROPERTY(EditAnywhere, Category="Player Info")
+	TSubclassOf<AFASPlayer> MyActorClass;
+
+	UPROPERTY()
+	bool bIsPossessingAnyPawn = false;
+
+	UPROPERTY()
+	AFASPlayer* SpawnedPlayerActor = nullptr;
 
 	UFUNCTION()
 	void MoveFunc(const FInputActionValue& Value);
@@ -61,5 +90,20 @@ public:
 
 	UFUNCTION()
 	void LookFunc(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void PossessFunc(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void CheckCanPossess();
+
+	UFUNCTION(BlueprintCallable, Category="Controller")
+	void PossessEnemy();
+
+	UFUNCTION(BlueprintCallable, Category="Controller")
+	void PossessPlayer();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Camera")
+	void MoveCameraInDirectionOfPossession(AFASCharacterBase* PawnToPossess);
 	
 };
