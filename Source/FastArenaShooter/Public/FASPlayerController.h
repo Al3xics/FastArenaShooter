@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FASCharacterBase.h"
+#include "FASGameMode.h"
 #include "FASPlayer.h"
 #include "InputMappingContext.h"
 #include "GameFramework/PlayerController.h"
@@ -52,12 +53,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player Info")
 	AFASCharacterBase* ControlledCharacter;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Info")
-	float MaxHealth = 100.0f;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Player Info")
-	float CurrentHealth;
-
 	UPROPERTY(EditAnywhere, Category="Player Info")
 	float MouseSensitivity = 0.5f;
 
@@ -78,6 +73,9 @@ public:
 
 	UPROPERTY()
 	AFASPlayer* SpawnedPlayerActor = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category="Game")
+	AFASGameMode* GameMode = nullptr;
 
 	UFUNCTION()
 	void MoveFunc(const FInputActionValue& Value);

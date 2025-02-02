@@ -7,9 +7,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "FASCharacterBase.h"
 #include "FASEnemyBase.h"
+#include "FASGameMode.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -30,8 +30,10 @@ void AFASPlayerController::BeginPlay()
 		}
 	}
 
+	GameMode = Cast<AFASGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
 	// Set current health to max health
-	CurrentHealth = MaxHealth;
+	GameMode->CurrentPlayerHealth = GameMode->MaxPlayerHealth;
 }
 
 void AFASPlayerController::SetupInputComponent()

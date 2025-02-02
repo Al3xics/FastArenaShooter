@@ -14,6 +14,8 @@ AFASGameMode::AFASGameMode()
 void AFASGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	bIsPlayerDead = false;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFASSpawnerEnemyBase::StaticClass(), SpawnerEnemy);
 	StartSpawnEnemy();
@@ -52,4 +54,13 @@ void AFASGameMode::StartSpawnEnemy()
 			}
 		}
 	}
+}
+
+bool AFASGameMode::CheckPlayerDeath()
+{
+	if (CurrentPlayerHealth <= 0){
+		bIsPlayerDead = true;
+	}
+
+	return bIsPlayerDead;
 }

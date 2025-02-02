@@ -35,7 +35,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic")
 	float MaxPlayerHealth = 100.f;
 
-	static float CurrentPlayerHealth;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic")
+	float CurrentPlayerHealth = 0.f;
 	
 	UPROPERTY()
 	AFASPlayer* Player = nullptr;
@@ -48,4 +49,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Game Logic")
 	void StartSpawnEnemy();
+
+	UFUNCTION(BlueprintCallable, Category="Game Logic")
+	bool CheckPlayerDeath();
 };
