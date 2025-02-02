@@ -31,6 +31,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic")
 	FFASEnemySpawnSettings SpawnSettingsEnemy2;
 
+	// Player
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic")
+	float MaxPlayerHealth = 100.f;
+
+	static float CurrentPlayerHealth;
+	
 	UPROPERTY()
 	AFASPlayer* Player = nullptr;
 
