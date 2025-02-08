@@ -4,6 +4,7 @@
 #include "FASEnemyBase.h"
 
 #include "FASPlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -20,6 +21,24 @@ void AFASEnemyBase::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerController = Cast<AFASPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	GameMode = Cast<AFASGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	// Set current health to max health
+	if (IsA(GameMode->EnemyType1Class))
+	{
+		MaxEnemyHealth = GameMode->MaxEnemy1Health;
+		CurrentEnemyHealth = GameMode->MaxEnemy1Health;
+	}
+	else if (IsA(GameMode->EnemyType2Class))
+	{
+		MaxEnemyHealth = GameMode->MaxEnemy2Health;
+		CurrentEnemyHealth = GameMode->MaxEnemy2Health;
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, TEXT("Please choose a class for EnemyTypeClass in the GameMode."));
+	}
 }
 
 // Called every frame
