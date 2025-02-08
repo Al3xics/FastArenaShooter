@@ -8,6 +8,7 @@
 #include "Struct/FASEnemySpawnSettings.h"
 #include "FASGameMode.generated.h"
 
+class AFASEnemyBase;
 /**
  * 
  */
@@ -23,23 +24,46 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// Enemy 1
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic")
+	// Enemies
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies")
+	TArray<AActor*> SpawnerEnemy;
+	
+		// Enemy 1
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
 	FFASEnemySpawnSettings SpawnSettingsEnemy1;
 
-	// Enemy 2
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
+	float MaxEnemy1Health = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
+	TSubclassOf<AFASEnemyBase> EnemyType1Class;
+
+		// Enemy 2
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
 	FFASEnemySpawnSettings SpawnSettingsEnemy2;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
+	float MaxEnemy2Health = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
+	TSubclassOf<AFASEnemyBase> EnemyType2Class;
+
+	// Player
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Player")
+	float MaxPlayerHealth = 100.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic|Player")
+	float CurrentPlayerHealth = 0.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic|Player")
+	bool bIsPlayerDead = false;
+	
 	UPROPERTY()
 	AFASPlayer* Player = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic")
-	bool bIsPlayerDead = false;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic")
-	TArray<AActor*> SpawnerEnemy;
-
 	UFUNCTION(BlueprintCallable, Category="Game Logic")
 	void StartSpawnEnemy();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game Logic")
+	bool GetIsPlayerDead();
 };

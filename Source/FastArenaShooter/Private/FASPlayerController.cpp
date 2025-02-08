@@ -7,9 +7,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "FASCharacterBase.h"
 #include "FASEnemyBase.h"
+#include "FASGameMode.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -30,8 +30,10 @@ void AFASPlayerController::BeginPlay()
 		}
 	}
 
+	GameMode = Cast<AFASGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
 	// Set current health to max health
-	CurrentHealth = MaxHealth;
+	GameMode->CurrentPlayerHealth = GameMode->MaxPlayerHealth;
 }
 
 void AFASPlayerController::SetupInputComponent()
@@ -101,27 +103,45 @@ void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
 	// Else (OtherCharacter not null), then possess enemy
 	if (OtherCharacter == nullptr && Enemy)
 	{
-		const FVector PlayerSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToFrontSpawn));
+		FVector PlayerSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToFrontSpawn));
 		const FRotator PlayerSpawnRotation = FRotator(Enemy->GetActorRotation());
 		const FVector PlayerSpawnScale = FVector(Enemy->GetCapsuleComponent()->GetRelativeTransform().GetScale3D());
 		const FTransform PlayerTransform = UKismetMathLibrary::MakeTransform(PlayerSpawnLocation, PlayerSpawnRotation, PlayerSpawnScale);
-		FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
-		SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		// 1. Perform a Line Trace to check if an obstacle is blocking the spawn location
+		FHitResult HitResult;
+		FVector TraceStart = Enemy->GetActorLocation();
+		FVector TraceEnd = PlayerSpawnLocation;
+    
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(Enemy); // Ignore the enemy himself
+
+		bool bObstacleDetected = GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
+
+		if (bObstacleDetected)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("You will spawn in the wall. Please try unpossessing somewhere else."));
+		}
+		else
+		{
+			FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
+			SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
-		SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
-		SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
-		MoveCameraInDirectionOfPossession(SpawnedPlayerActor);
+			SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
+			SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
+			MoveCameraInDirectionOfPossession(SpawnedPlayerActor);
+		}
 	}
 	else if (OtherCharacter != nullptr)
 	{
-		bIsPossessingAnyPawn = true;
+		bCanPossessPawn = false;
 		MoveCameraInDirectionOfPossession(OtherCharacter);
 	}
 }
 
 void AFASPlayerController::CheckCanPossess()
 {
-	if (!bIsPossessingAnyPawn)
+	if (bCanPossessPawn)
 	{
 		// Used for the LineTrace
 		FVector OutLocation;
@@ -159,7 +179,7 @@ void AFASPlayerController::PossessEnemy()
 	UnPossess();
 	Possess(OtherCharacter);
 	ControlledCharacter = OtherCharacter;
-	bIsPossessingAnyPawn = false;
+	bCanPossessPawn = true;
 
 	if (AFASPlayer* OldFASPlayer = Cast<AFASPlayer>(Old))
 	{
