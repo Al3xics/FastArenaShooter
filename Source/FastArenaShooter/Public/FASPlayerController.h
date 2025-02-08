@@ -69,7 +69,7 @@ public:
 	TSubclassOf<AFASPlayer> MyActorClass;
 
 	UPROPERTY()
-	bool bIsPossessingAnyPawn = false;
+	bool bCanPossessPawn = true;
 
 	UPROPERTY()
 	AFASPlayer* SpawnedPlayerActor = nullptr;

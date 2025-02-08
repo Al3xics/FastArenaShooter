@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FASCharacterBase.h"
+#include "FASPlayerController.h"
 #include "GameFramework/Character.h"
 #include "FASEnemyBase.generated.h"
 
@@ -27,5 +28,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
+	FVector CameraRelativeLocationInGame = FVector(20,0,60);
+
+	UPROPERTY()
+	AFASPlayerController* PlayerController;
 };

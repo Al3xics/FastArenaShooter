@@ -50,6 +50,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Game Logic")
 	void StartSpawnEnemy();
 
-	UFUNCTION(BlueprintCallable, Category="Game Logic")
-	bool CheckPlayerDeath();
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game Logic")
+	bool GetIsPlayerDead();
 };
