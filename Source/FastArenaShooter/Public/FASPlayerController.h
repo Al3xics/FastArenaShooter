@@ -101,7 +101,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Controller")
 	void PossessPlayer();
 
+	UFUNCTION(BlueprintCallable, Category="Controller")
+	void PossessPlayerAfterEnemyDeath();
+
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Camera")
-	void MoveCameraInDirectionOfPossession(AFASCharacterBase* PawnToPossess);
+	void MoveCameraInDirectionOfPossession(AFASCharacterBase* PawnToPossess, bool DestroyCurrentActor);
 	
 };

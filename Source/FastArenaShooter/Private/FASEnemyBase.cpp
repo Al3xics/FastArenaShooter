@@ -21,8 +21,9 @@ void AFASEnemyBase::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerController = Cast<AFASPlayerController>(GetWorld()->GetFirstPlayerController());
-
 	GameMode = Cast<AFASGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	bIsEnemyDead = false;
 
 	// Set current health to max health
 	if (IsA(GameMode->EnemyType1Class))
@@ -58,5 +59,15 @@ void AFASEnemyBase::Tick(float DeltaTime)
 void AFASEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+bool AFASEnemyBase::CheckIsEnemyDead()
+{
+	if (CurrentEnemyHealth <= 0.f)
+	{
+		bIsEnemyDead = true;
+	}
+
+	return bIsEnemyDead;
 }
 

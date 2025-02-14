@@ -129,13 +129,13 @@ void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
 		
 			SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
 			SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
-			MoveCameraInDirectionOfPossession(SpawnedPlayerActor);
+			MoveCameraInDirectionOfPossession(SpawnedPlayerActor, false);
 		}
 	}
 	else if (OtherCharacter != nullptr)
 	{
 		bCanPossessPawn = false;
-		MoveCameraInDirectionOfPossession(OtherCharacter);
+		MoveCameraInDirectionOfPossession(OtherCharacter, false);
 	}
 }
 
@@ -192,4 +192,43 @@ void AFASPlayerController::PossessPlayer()
 	UnPossess();
 	Possess(SpawnedPlayerActor);
 	SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(true, true);
+}
+
+void AFASPlayerController::PossessPlayerAfterEnemyDeath()
+{
+	const AFASEnemyBase* Enemy = Cast<AFASEnemyBase>(GetPawn());
+	
+	// If OtherCharacter is null && not in player, then spawn player
+	// Else (OtherCharacter not null), then possess enemy
+	if (OtherCharacter == nullptr && Enemy)
+	{
+		FVector PlayerSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToFrontSpawn));
+		const FRotator PlayerSpawnRotation = FRotator(Enemy->GetActorRotation());
+		const FVector PlayerSpawnScale = FVector(Enemy->GetCapsuleComponent()->GetRelativeTransform().GetScale3D());
+		const FTransform PlayerTransform = UKismetMathLibrary::MakeTransform(PlayerSpawnLocation, PlayerSpawnRotation, PlayerSpawnScale);
+
+		// 1. Perform a Line Trace to check if an obstacle is blocking the spawn location
+		FHitResult HitResult;
+		FVector TraceStart = Enemy->GetActorLocation();
+		FVector TraceEnd = PlayerSpawnLocation;
+    
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(Enemy); // Ignore the enemy himself
+
+		bool bObstacleDetected = GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
+
+		if (bObstacleDetected)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("You will spawn in the wall. Please try unpossessing somewhere else."));
+		}
+		else
+		{
+			FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
+			SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+			SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
+			SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
+			MoveCameraInDirectionOfPossession(SpawnedPlayerActor, true);
+		}
+	}
 }

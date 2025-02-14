@@ -56,7 +56,7 @@ void AFASGameMode::StartSpawnEnemy()
 	}
 }
 
-bool AFASGameMode::GetIsPlayerDead()
+bool AFASGameMode::CheckIsPlayerDead()
 {
 	if (CurrentPlayerHealth <= 0){
 		bIsPlayerDead = true;

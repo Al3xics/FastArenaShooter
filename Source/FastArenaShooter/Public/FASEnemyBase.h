@@ -40,6 +40,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Enemy")
 	float CurrentEnemyHealth;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Enemy")
+	bool bIsEnemyDead = false;
+
+	UPROPERTY(BlueprintReadOnly, Category="Enemy")
 	AFASPlayerController* PlayerController;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Enemy")
+	bool CheckIsEnemyDead();
 };
