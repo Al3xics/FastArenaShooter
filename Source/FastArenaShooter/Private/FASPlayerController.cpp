@@ -8,6 +8,8 @@
 #include "FASCharacterBase.h"
 #include "FASEnemyBase.h"
 #include "FASGameMode.h"
+#include "NavigationSystem.h"
+#include "VectorTypes.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -103,34 +105,36 @@ void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
 	// Else (OtherCharacter not null), then possess enemy
 	if (OtherCharacter == nullptr && Enemy)
 	{
-		FVector PlayerSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToFrontSpawn));
+		FVector TestSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToSpawn));
+		TArray<AActor*> ActorsToIgnore;
+		FHitResult OutHit;
+		Enemy->GetAttachedActors(ActorsToIgnore, true, true);
+		const bool bHit = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), GetPawn()->GetActorLocation(), TestSpawnLocation, ObjectTypesToIgnore, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FColor::Red, FColor::Green, 2);
+
+		if (bHit)
+		{
+			float Distance = FVector::Dist(OutHit.Location, Enemy->GetActorLocation());
+			if (Distance < 100.f)
+			{
+				FVector RandomLocation;
+				bool bFoundLocation = UNavigationSystemV1::K2_GetRandomLocationInNavigableRadius(GetWorld(), Enemy->GetActorLocation(), RandomLocation, DistanceToSpawn);
+				TestSpawnLocation = RandomLocation;
+			}
+			else
+				TestSpawnLocation = OutHit.Location;
+		}
+		
+		FVector PlayerSpawnLocation = TestSpawnLocation;
 		const FRotator PlayerSpawnRotation = FRotator(Enemy->GetActorRotation());
 		const FVector PlayerSpawnScale = FVector(Enemy->GetCapsuleComponent()->GetRelativeTransform().GetScale3D());
 		const FTransform PlayerTransform = UKismetMathLibrary::MakeTransform(PlayerSpawnLocation, PlayerSpawnRotation, PlayerSpawnScale);
 
-		// 1. Perform a Line Trace to check if an obstacle is blocking the spawn location
-		FHitResult HitResult;
-		FVector TraceStart = Enemy->GetActorLocation();
-		FVector TraceEnd = PlayerSpawnLocation;
-    
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(Enemy); // Ignore the enemy himself
-
-		bool bObstacleDetected = GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-
-		if (bObstacleDetected)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("You will spawn in the wall. Please try unpossessing somewhere else."));
-		}
-		else
-		{
-			FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
-			SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
+		SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
-			SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
-			SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
-			MoveCameraInDirectionOfPossession(SpawnedPlayerActor, false);
-		}
+		SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
+		SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
+		MoveCameraInDirectionOfPossession(SpawnedPlayerActor, false);
 	}
 	else if (OtherCharacter != nullptr)
 	{
@@ -202,7 +206,7 @@ void AFASPlayerController::PossessPlayerAfterEnemyDeath()
 	// Else (OtherCharacter not null), then possess enemy
 	if (OtherCharacter == nullptr && Enemy)
 	{
-		FVector PlayerSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToFrontSpawn));
+		FVector PlayerSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToSpawn));
 		const FRotator PlayerSpawnRotation = FRotator(Enemy->GetActorRotation());
 		const FVector PlayerSpawnScale = FVector(Enemy->GetCapsuleComponent()->GetRelativeTransform().GetScale3D());
 		const FTransform PlayerTransform = UKismetMathLibrary::MakeTransform(PlayerSpawnLocation, PlayerSpawnRotation, PlayerSpawnScale);

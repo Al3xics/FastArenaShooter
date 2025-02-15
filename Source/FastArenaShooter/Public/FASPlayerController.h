@@ -63,10 +63,13 @@ public:
 	AFASCharacterBase* OtherCharacter = nullptr;
 
 	UPROPERTY(EditAnywhere, Category="Player Info")
-	float DistanceToFrontSpawn = 300.0f;
+	float DistanceToSpawn = 300.0f;
 
 	UPROPERTY(EditAnywhere, Category="Player Info")
 	TSubclassOf<AFASPlayer> MyActorClass;
+
+	UPROPERTY(EditAnywhere, Category="Player Info", meta=(ToolTip="Object types to ignore when making line trace to check no obstable in front when unpossessing."))
+	TArray <TEnumAsByte<EObjectTypeQuery>> ObjectTypesToIgnore;
 
 	UPROPERTY()
 	bool bCanPossessPawn = true;
