@@ -59,15 +59,28 @@ public:
 	bool bIsPlayerDead = false;
 
 	// Weapons
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons")
-	float AutoRifleDamage = 10.f;
+		// Auto Rifle
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
+	float AutoRifleDamageWhenEnemy = 5.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons")
-	float SoulLauncherDamage = 10.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
+	float AutoRifleDamageWhenPlayerHEAD = 15.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
+	float AutoRifleDamageWhenPlayerBODY = 10.f;
+
+		// Soul Launcher
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Soul Launcher")
+	float SoulLauncherDamageWhenEnemy = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Soul Launcher")
+	float SoulLauncherDamageWhenPlayer = 15.f;
+
+		// Doll
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Doll")
 	float DollDamage = 10.f;
-	
+
+	// Other
 	UPROPERTY()
 	AFASPlayer* Player = nullptr;
 
@@ -76,4 +89,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game Logic")
 	bool CheckIsPlayerDead();
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category="Game Logic")
+	void DestroyActorAndChildrenActor(AActor* ActorToDestroy);
 };
