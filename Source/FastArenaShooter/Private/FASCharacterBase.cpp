@@ -16,6 +16,16 @@ AFASCharacterBase::AFASCharacterBase()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+
+	HeadCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadCollision"));
+	HeadCollision->SetupAttachment(RootComponent);
+	HeadCollision->SetRelativeLocation(FVector(0.f, 0.f, 70.f));
+	HeadCollision->SetCapsuleSize(25, 25);
+
+	BodyCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BodyCollision"));
+	BodyCollision->SetupAttachment(RootComponent);
+	BodyCollision->SetRelativeLocation(FVector(0.f, 0.f, -13.f));
+	BodyCollision->SetCapsuleSize(34, 75);
 }
 
 // Called when the game starts or when spawned

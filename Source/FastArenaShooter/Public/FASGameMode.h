@@ -32,7 +32,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
 	FFASEnemySpawnSettings SpawnSettingsEnemy1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Enemies|Enemy 1")
 	float MaxEnemy1Health = 100.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
@@ -42,14 +42,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
 	FFASEnemySpawnSettings SpawnSettingsEnemy2;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Enemies|Enemy 2")
 	float MaxEnemy2Health = 100.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
 	TSubclassOf<AFASEnemyBase> EnemyType2Class;
 
 	// Player
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Player")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Player")
 	float MaxPlayerHealth = 100.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic|Player")
@@ -57,7 +57,30 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic|Player")
 	bool bIsPlayerDead = false;
+
+	// Weapons
+		// Auto Rifle
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
+	float AutoRifleDamageWhenEnemy = 5.f;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
+	float AutoRifleDamageWhenPlayerHEAD = 15.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
+	float AutoRifleDamageWhenPlayerBODY = 10.f;
+
+		// Soul Launcher
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Soul Launcher")
+	float SoulLauncherDamageWhenEnemy = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Soul Launcher")
+	float SoulLauncherDamageWhenPlayer = 15.f;
+
+		// Doll
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Doll")
+	float DollDamage = 10.f;
+
+	// Other
 	UPROPERTY()
 	AFASPlayer* Player = nullptr;
 
@@ -65,5 +88,8 @@ public:
 	void StartSpawnEnemy();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game Logic")
-	bool GetIsPlayerDead();
+	bool CheckIsPlayerDead();
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category="Game Logic")
+	void DestroyActorAndChildrenActor(AActor* ActorToDestroy);
 };
