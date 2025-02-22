@@ -61,20 +61,29 @@ public:
 	// Weapons
 		// Auto Rifle
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
-	float AutoRifleDamageWhenEnemy = 5.f;
+	float AutoRifleDamageEnemyMode = 10.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
-	float AutoRifleDamageWhenPlayerHEAD = 15.f;
+	float AutoRifleDamagePlayerMode = 10.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
-	float AutoRifleDamageWhenPlayerBODY = 10.f;
+	float AutoRifleDamagePlayerToEnemyHEAD = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Auto Rifle")
+	float AutoRifleDamagePlayerToEnemyBODY = 10.f;
 
 		// Soul Launcher
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Soul Launcher")
-	float SoulLauncherDamageWhenEnemy = 10.f;
+	float SoulLauncherDamageEnemyMode = 10.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Soul Launcher")
-	float SoulLauncherDamageWhenPlayer = 15.f;
+	float SoulLauncherDamagePlayerMode = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Soul Launcher")
+	float SoulLauncherDamagePlayerToEnemyHEAD = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Soul Launcher")
+	float SoulLauncherDamagePlayerToEnemyBODY = 10.f;
 
 		// Doll
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Doll")
