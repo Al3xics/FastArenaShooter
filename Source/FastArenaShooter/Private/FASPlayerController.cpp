@@ -193,7 +193,18 @@ void AFASPlayerController::PossessEnemy()
 
 void AFASPlayerController::PossessPlayer()
 {
+	APawn* Old = GetPawn();
+
 	UnPossess();
+
+	if (GameMode && GameMode->EnemyAIControllerClass)
+	{
+		if (AAIController* AIController = GetWorld()->SpawnActor<AAIController>(GameMode->EnemyAIControllerClass))
+		{
+			AIController->Possess(Old);
+		}
+	}
+
 	Possess(SpawnedPlayerActor);
 	SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(true, true);
 }
