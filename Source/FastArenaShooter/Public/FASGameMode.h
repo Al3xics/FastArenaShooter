@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIController.h"
 #include "FASPlayer.h"
 #include "GameFramework/GameModeBase.h"
 #include "Struct/FASEnemySpawnSettings.h"
@@ -27,6 +28,9 @@ public:
 	// Enemies
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies")
 	TArray<AActor*> SpawnerEnemy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies")
+	TSubclassOf<AAIController> EnemyAIControllerClass;
 	
 		// Enemy 1
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
