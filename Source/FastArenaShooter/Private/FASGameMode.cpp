@@ -6,6 +6,7 @@
 #include "Logging/MessageLog.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AFASGameMode::AFASGameMode()
 {
@@ -63,4 +64,14 @@ bool AFASGameMode::CheckIsPlayerDead()
 	}
 
 	return bIsPlayerDead;
+}
+
+void AFASGameMode::IncreaseRevenge(const float Value)
+{
+	CurrentRevenge = FMath::Clamp(CurrentRevenge + Value, 0, MaxRevenge);
+}
+
+void AFASGameMode::DecreaseRevengeValue(const float Value)
+{
+	CurrentRevenge = FMath::Clamp(CurrentRevenge - Value, 0, MaxRevenge);
 }
