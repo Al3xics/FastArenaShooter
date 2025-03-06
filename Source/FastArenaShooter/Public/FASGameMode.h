@@ -93,6 +93,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Doll")
 	float DollDamage = 10.f;
 
+	// User Interface
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|User Interface")
+	float MaxRevenge = 100.f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Game Logic|User Interface")
+	float CurrentRevenge = 0.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|User Interface")
+	float RevengeIncrementPerHeadshot = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|User Interface")
+	float RevengeIncrementPerKill = 4.f;
+
 	// Other
 	UPROPERTY()
 	AFASPlayer* Player = nullptr;
@@ -105,4 +118,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category="Game Logic")
 	void DestroyActorAndChildrenActor(AActor* ActorToDestroy);
+
+	UFUNCTION(BlueprintCallable, Category="Game Logic")
+	void IncreaseRevenge(float Value);
+
+	UFUNCTION(BlueprintCallable, Category="Game Logic")
+	void DecreaseRevengeValue(float Value);
+
+	UFUNCTION(BlueprintCallable, Category="Game Logic")
+	void ResetRevengeValue() { CurrentRevenge = 0.f; }
 };
