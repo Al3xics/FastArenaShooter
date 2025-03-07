@@ -66,7 +66,6 @@ bool AFASEnemyBase::CheckIsEnemyDead()
 	if (CurrentEnemyHealth <= 0.f)
 	{
 		bIsEnemyDead = true;
-		GameMode->IncreaseRevenge(GameMode->RevengeIncrementPerKill);
 	}
 
 	return bIsEnemyDead;

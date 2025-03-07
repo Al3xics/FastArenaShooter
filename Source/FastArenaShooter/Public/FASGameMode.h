@@ -93,18 +93,37 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Weapons|Doll")
 	float DollDamage = 10.f;
 
-	// User Interface
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|User Interface")
+	// Revenge Bar
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Revenge Bar")
 	float MaxRevenge = 100.f;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Game Logic|User Interface")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Game Logic|Revenge Bar")
 	float CurrentRevenge = 0.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|User Interface")
-	float RevengeIncrementPerHeadshot = 10.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|User Interface")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Revenge Bar")
 	float RevengeIncrementPerKill = 4.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Revenge Bar")
+	float RevengeMultiplier = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Revenge Bar")
+	float FallExecutionRevenge = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Revenge Bar")
+	float NormalExecutionRevenge = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Revenge Bar")
+	float HeadshotExecutionRevenge = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Revenge Bar")
+	float UnpossessExecutionRevenge = 10.f;
+
+	// Misc
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Misc")
+	float FallDeathTime = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Misc")
+	float RageHealthBonus = 10.f;
 
 	// Other
 	UPROPERTY()
