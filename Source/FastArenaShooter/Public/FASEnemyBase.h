@@ -43,6 +43,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Enemy")
 	bool bIsEnemyDead = false;
 
+	UPROPERTY(BlueprintReadWrite, Category="Enemy")
+	FVector GoToLocation;
+
 	UPROPERTY(BlueprintReadOnly, Category="Enemy")
 	AFASPlayerController* PlayerController;
 
