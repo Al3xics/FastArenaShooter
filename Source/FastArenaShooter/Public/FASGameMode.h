@@ -31,6 +31,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies")
 	TSubclassOf<AAIController> EnemyAIControllerClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies")
+	float SmoothFocusInterpSpeed = 130.0f;
 	
 		// Enemy 1
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
