@@ -133,7 +133,7 @@ public:
 	AFASPlayer* Player = nullptr;
 
 	UFUNCTION(BlueprintCallable, Category="Game Logic")
-	void StartSpawnEnemy();
+	void PassVariableToSpawners();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game Logic")
 	bool CheckIsPlayerDead();
