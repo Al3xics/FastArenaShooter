@@ -2,6 +2,8 @@
 
 
 #include "EnemyAIController.h"
+
+#include "FASEnemyBase.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -35,16 +37,20 @@ void AEnemyAIController::UpdateControlRotation(float DeltaTime, bool bUpdatePawn
 	{
 		//Get pawn
 		APawn* const MyPawn = GetPawn();
-		//Get Pawn current rotation
-		const FRotator CurrentPawnRotation = MyPawn->GetActorRotation();
- 
-		//Calculate smoothed rotation
-		SmoothTargetRotation = UKismetMathLibrary::RInterpTo_Constant(MyPawn->GetActorRotation(), ControlRotation, DeltaTime, GameMode->SmoothFocusInterpSpeed);
-		//Check if we need to change
-		if (CurrentPawnRotation.Equals(SmoothTargetRotation, 1e-3f) == false)
+
+		if (Cast<AFASEnemyBase>(MyPawn))
 		{
-			//Change rotation using the Smooth Target Rotation
-			MyPawn->FaceRotation(SmoothTargetRotation, DeltaTime);
+			//Get Pawn current rotation
+			const FRotator CurrentPawnRotation = MyPawn->GetActorRotation();
+ 
+			//Calculate smoothed rotation
+			SmoothTargetRotation = UKismetMathLibrary::RInterpTo_Constant(MyPawn->GetActorRotation(), ControlRotation, DeltaTime, GameMode->SmoothFocusInterpSpeed);
+			//Check if we need to change
+			if (CurrentPawnRotation.Equals(SmoothTargetRotation, 1e-3f) == false)
+			{
+				//Change rotation using the Smooth Target Rotation
+				MyPawn->FaceRotation(SmoothTargetRotation, DeltaTime);
+			}
 		}
 	}
 }
