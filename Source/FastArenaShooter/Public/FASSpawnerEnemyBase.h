@@ -33,6 +33,9 @@ public:
 	class USphereComponent* SphereCollision;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
+	FFASEnemySpawnSettings SpawnSettingsEnemy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
 	TSubclassOf<AFASEnemyBase> EnemyClassToSpawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
@@ -46,9 +49,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	float TimeElapsed = 0.0f;
-
-	UPROPERTY()
-	FFASEnemySpawnSettings SpawnSettingsEnemy;
 
 	UPROPERTY()
 	int TotalEnemy = 0;
