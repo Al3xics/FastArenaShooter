@@ -46,13 +46,6 @@ void AFASEnemyBase::BeginPlay()
 void AFASEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// Force Camera position because when unpossessing enemy when moving, camera does not reset correctly
-	if (!PlayerController->bCanPossessPawn && // If we are not playing possess animation (move camera to character)
-		FirstPersonCameraComponent->GetRelativeLocation() != CameraRelativeLocationInGame)
-	{
-		FirstPersonCameraComponent->SetRelativeLocation(CameraRelativeLocationInGame);
-	}
 }
 
 // Called to bind functionality to input
