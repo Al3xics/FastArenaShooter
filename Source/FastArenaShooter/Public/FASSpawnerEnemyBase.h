@@ -27,6 +27,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* BoxCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner", meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* SphereCollision;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
@@ -52,4 +55,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 	void SpawnEnemy();
+
+	UFUNCTION()
+	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };

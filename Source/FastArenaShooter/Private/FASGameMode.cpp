@@ -19,10 +19,10 @@ void AFASGameMode::BeginPlay()
 	bIsPlayerDead = false;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFASSpawnerEnemyBase::StaticClass(), SpawnerEnemy);
-	StartSpawnEnemy();
+	PassVariableToSpawners();
 }
 
-void AFASGameMode::StartSpawnEnemy()
+void AFASGameMode::PassVariableToSpawners()
 {
 	if (bIsPlayerDead) return;
 	
@@ -40,12 +40,10 @@ void AFASGameMode::StartSpawnEnemy()
 				
 				case EnemyType1:
 					Spawner->SpawnSettingsEnemy = SpawnSettingsEnemy1;
-					Spawner->SpawnEnemy();
 					break;
 				
 				case EnemyType2:
 					Spawner->SpawnSettingsEnemy = SpawnSettingsEnemy2;
-					Spawner->SpawnEnemy();
 					break;
 				
 				default:
