@@ -36,9 +36,6 @@ public:
 	float SmoothFocusInterpSpeed = 130.0f;
 	
 		// Enemy 1
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
-	FFASEnemySpawnSettings SpawnSettingsEnemy1;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Enemies|Enemy 1")
 	float MaxEnemy1Health = 100.f;
 
@@ -46,9 +43,6 @@ public:
 	TSubclassOf<AFASEnemyBase> EnemyType1Class;
 
 		// Enemy 2
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
-	FFASEnemySpawnSettings SpawnSettingsEnemy2;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Enemies|Enemy 2")
 	float MaxEnemy2Health = 100.f;
 
@@ -131,9 +125,6 @@ public:
 	// Other
 	UPROPERTY()
 	AFASPlayer* Player = nullptr;
-
-	UFUNCTION(BlueprintCallable, Category="Game Logic")
-	void StartSpawnEnemy();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game Logic")
 	bool CheckIsPlayerDead();
