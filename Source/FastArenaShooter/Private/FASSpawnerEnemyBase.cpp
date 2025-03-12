@@ -5,6 +5,7 @@
 
 #include "FASEnemyBase.h"
 #include "NavigationSystem.h"
+#include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 
 
@@ -18,13 +19,20 @@ AFASSpawnerEnemyBase::AFASSpawnerEnemyBase()
 	SphereCollision->SetLineThickness(5.f);
 	SphereCollision->SetSphereRadius(400.f);
 	RootComponent = SphereCollision;
+
+	BoxCollision = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
+	BoxCollision->SetLineThickness(5);
+	BoxCollision->SetBoxExtent(FVector(800, 800, 400));
+	BoxCollision->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AFASSpawnerEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AFASSpawnerEnemyBase::BeginOverlap);
+	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &AFASSpawnerEnemyBase::EndOverlap);
 }
 
 // Called every frame
@@ -55,5 +63,31 @@ void AFASSpawnerEnemyBase::SpawnEnemy()
 		GetWorld()->GetTimerManager().SetTimer(SpawnerTimerHandle, this, &AFASSpawnerEnemyBase::SpawnEnemy, NewSpawnRate, false);
 	}
 
+}
+
+void AFASSpawnerEnemyBase::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!OtherActor) return;
+
+	const AFASPlayerController* PlayerController = Cast<AFASPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	if (PlayerController && PlayerController->GetPawn() == OtherActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player entered the spawn zone!"));
+		SpawnEnemy();
+	}
+}
+
+void AFASSpawnerEnemyBase::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (!OtherActor) return;
+
+	AFASPlayerController* PlayerController = Cast<AFASPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	if (PlayerController && PlayerController->GetPawn() == OtherActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player left the spawn zone!"));
+		GetWorld()->GetTimerManager().ClearTimer(SpawnerTimerHandle);
+	}
 }
 
