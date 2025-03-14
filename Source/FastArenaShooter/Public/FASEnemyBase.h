@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "FASCharacterBase.h"
 #include "FASPlayerController.h"
+#include "FASSpawnerEnemyBase.h"
 #include "GameFramework/Character.h"
 #include "FASEnemyBase.generated.h"
 
@@ -46,11 +47,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="Enemy")
 	FVector GoToLocation;
 
-	UPROPERTY(BlueprintReadWrite, Category="Sentinel")
-	AActor* TooglPoint;
+	UPROPERTY(BlueprintReadWrite, Category="Enemy")
+	AActor* Waypoint;
 
 	UPROPERTY(BlueprintReadOnly, Category="Enemy")
 	AFASPlayerController* PlayerController;
+
+	UPROPERTY()
+	AFASSpawnerEnemyBase* SpawnerWhereEnemySpawned;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Enemy")
 	bool CheckIsEnemyDead();
