@@ -46,6 +46,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="Enemy")
 	FVector GoToLocation;
 
+	UPROPERTY(BlueprintReadWrite, Category="Sentinel")
+	AActor* TooglPoint;
+
 	UPROPERTY(BlueprintReadOnly, Category="Enemy")
 	AFASPlayerController* PlayerController;
 
