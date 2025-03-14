@@ -33,6 +33,9 @@ void AFASSpawnerEnemyBase::BeginPlay()
 
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AFASSpawnerEnemyBase::BeginOverlap);
 	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &AFASSpawnerEnemyBase::EndOverlap);
+
+	if (bIsSentinel)
+		SpawnSettingsEnemy.MaxEnemy = 1;
 }
 
 // Called every frame
@@ -43,13 +46,28 @@ void AFASSpawnerEnemyBase::Tick(float DeltaTime)
 
 void AFASSpawnerEnemyBase::SpawnEnemy()
 {
-	FVector RandomSpawnLocation;
-	UNavigationSystemV1::K2_GetRandomReachablePointInRadius(GetWorld(), GetActorLocation(), RandomSpawnLocation, SphereCollision->GetScaledSphereRadius());
-	FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
-	SpawnParams->SpawnCollisionHandlingOverride = CollisionHandlingOverride;
-	
-	GetWorld()->SpawnActor<AFASEnemyBase>(EnemyClassToSpawn, RandomSpawnLocation, FRotator(0, 0, 0), *SpawnParams);
-	++TotalEnemy;
+	if (TotalEnemy < SpawnSettingsEnemy.MaxEnemy)
+	{
+		FVector RandomSpawnLocation;
+		UNavigationSystemV1::K2_GetRandomReachablePointInRadius(GetWorld(), GetActorLocation(), RandomSpawnLocation, SphereCollision->GetScaledSphereRadius());
+		FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
+		SpawnParams->SpawnCollisionHandlingOverride = CollisionHandlingOverride;
+
+		AFASEnemyBase* EnemyBase = GetWorld()->SpawnActor<AFASEnemyBase>(EnemyClassToSpawn, RandomSpawnLocation, FRotator(0, 0, 0), *SpawnParams);
+		EnemyBase->SpawnerWhereEnemySpawned = this;
+
+		if (bIsSentinel)
+		{
+			EnemyBase->Tags.Add(Tag);
+		
+			if (Waypoint == nullptr)
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("No Waypoint was added to %s"), *GetName()));
+			else
+				EnemyBase->Waypoint = Waypoint;
+		}
+		
+		++TotalEnemy;
+	}
 
 	// Stop timer if max enemy reached for this type of enemy
 	if (TotalEnemy >= SpawnSettingsEnemy.MaxEnemy)
