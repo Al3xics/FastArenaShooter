@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FASEnemyBase.h"
 #include "GameFramework/Actor.h"
 #include "Enum/FASEnemyType.h"
 #include "Struct/FASEnemySpawnSettings.h"
 #include "FASSpawnerEnemyBase.generated.h"
+
+class AFASEnemyBase;
 
 UCLASS()
 class FASTARENASHOOTER_API AFASSpawnerEnemyBase : public AActor
@@ -32,7 +33,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner", meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* SphereCollision;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner", meta = (ToolTip="If IsSentinel is true, 'MaxEnemy' will be set to 1."))
 	FFASEnemySpawnSettings SpawnSettingsEnemy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
@@ -40,6 +41,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
 	TEnumAsByte<EEnemyType> EnemyType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner", meta = (ToolTip="Tag used only if IsSentinel is true. Will be used to affect the behaviour tree corresponding to sentinel mode."))
+	FName Tag = "Sentinel";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
+	bool bIsSentinel = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
+	AActor* Waypoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
 	ESpawnActorCollisionHandlingMethod CollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
