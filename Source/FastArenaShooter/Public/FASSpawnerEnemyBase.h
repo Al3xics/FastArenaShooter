@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FASPlayerController.h"
 #include "GameFramework/Actor.h"
 #include "Enum/FASEnemyType.h"
 #include "Struct/FASEnemySpawnSettings.h"
@@ -62,6 +63,9 @@ public:
 
 	UPROPERTY()
 	int TotalEnemy = 0;
+
+	UPROPERTY()
+	AFASPlayerController* PlayerController;
 	
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 	void SpawnEnemy();
@@ -71,4 +75,7 @@ public:
 
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	bool IsControlledCharacterInsideBox() const;
 };

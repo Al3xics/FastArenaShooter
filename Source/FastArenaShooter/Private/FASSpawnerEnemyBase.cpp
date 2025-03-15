@@ -34,6 +34,8 @@ void AFASSpawnerEnemyBase::BeginPlay()
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AFASSpawnerEnemyBase::BeginOverlap);
 	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &AFASSpawnerEnemyBase::EndOverlap);
 
+	PlayerController = Cast<AFASPlayerController>(GetWorld()->GetFirstPlayerController());
+
 	if (bIsSentinel)
 		SpawnSettingsEnemy.MaxEnemy = 1;
 }
@@ -50,10 +52,13 @@ void AFASSpawnerEnemyBase::SpawnEnemy()
 	{
 		FVector RandomSpawnLocation;
 		UNavigationSystemV1::K2_GetRandomReachablePointInRadius(GetWorld(), GetActorLocation(), RandomSpawnLocation, SphereCollision->GetScaledSphereRadius());
-		FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
-		SpawnParams->SpawnCollisionHandlingOverride = CollisionHandlingOverride;
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = CollisionHandlingOverride;
 
-		AFASEnemyBase* EnemyBase = GetWorld()->SpawnActor<AFASEnemyBase>(EnemyClassToSpawn, RandomSpawnLocation, FRotator(0, 0, 0), *SpawnParams);
+		AFASEnemyBase* EnemyBase = GetWorld()->SpawnActor<AFASEnemyBase>(EnemyClassToSpawn, RandomSpawnLocation, FRotator(0, 0, 0), SpawnParams);
+		if (!EnemyBase) // Pourquoi ???????? Des fois EnemyBase est null sans aucune raison... J'aimerais bien une explication...
+			return;
+
 		EnemyBase->SpawnerWhereEnemySpawned = this;
 
 		if (bIsSentinel)
@@ -70,7 +75,7 @@ void AFASSpawnerEnemyBase::SpawnEnemy()
 	}
 
 	// Stop timer if max enemy reached for this type of enemy
-	if (TotalEnemy >= SpawnSettingsEnemy.MaxEnemy)
+	if (TotalEnemy >= SpawnSettingsEnemy.MaxEnemy || !IsControlledCharacterInsideBox())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(SpawnerTimerHandle);
 	}
@@ -87,11 +92,8 @@ void AFASSpawnerEnemyBase::BeginOverlap(UPrimitiveComponent* OverlappedComponent
 {
 	if (!OtherActor) return;
 
-	const AFASPlayerController* PlayerController = Cast<AFASPlayerController>(GetWorld()->GetFirstPlayerController());
-
 	if (PlayerController && PlayerController->GetPawn() == OtherActor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player entered the spawn zone!"));
 		SpawnEnemy();
 	}
 }
@@ -99,13 +101,20 @@ void AFASSpawnerEnemyBase::BeginOverlap(UPrimitiveComponent* OverlappedComponent
 void AFASSpawnerEnemyBase::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (!OtherActor) return;
-
-	AFASPlayerController* PlayerController = Cast<AFASPlayerController>(GetWorld()->GetFirstPlayerController());
-
+	
 	if (PlayerController && PlayerController->GetPawn() == OtherActor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player left the spawn zone!"));
 		GetWorld()->GetTimerManager().ClearTimer(SpawnerTimerHandle);
 	}
+}
+
+bool AFASSpawnerEnemyBase::IsControlledCharacterInsideBox() const
+{
+	const APawn* ControlledPawn = PlayerController->GetPawn();
+	if (!ControlledPawn) return false;
+
+	const bool bIsOverlapping = BoxCollision->IsOverlappingActor(ControlledPawn);
+
+	return bIsOverlapping;
 }
 

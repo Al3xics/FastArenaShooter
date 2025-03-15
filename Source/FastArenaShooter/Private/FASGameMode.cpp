@@ -6,7 +6,6 @@
 #include "Logging/MessageLog.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
 AFASGameMode::AFASGameMode()
 {
@@ -15,7 +14,8 @@ AFASGameMode::AFASGameMode()
 void AFASGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFASSpawnerEnemyBase::StaticClass(), SpawnerEnemy);
 	bIsPlayerDead = false;
 }
 
@@ -36,4 +36,14 @@ void AFASGameMode::IncreaseRevenge(const float Value)
 void AFASGameMode::DecreaseRevengeValue(const float Value)
 {
 	CurrentRevenge = FMath::Clamp(CurrentRevenge - Value, 0, MaxRevenge);
+}
+
+void AFASGameMode::CheckShouldSpawnEnemyIfPlayerInsideSpawner()
+{
+	for (AActor* Actor : SpawnerEnemy)
+	{
+		AFASSpawnerEnemyBase* Spawner = Cast<AFASSpawnerEnemyBase>(Actor);
+		if (Spawner->IsControlledCharacterInsideBox())
+			Spawner->SpawnEnemy();
+	}
 }

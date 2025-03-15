@@ -140,4 +140,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Game Logic")
 	void ResetRevengeValue() { CurrentRevenge = 0.f; }
+
+	UFUNCTION()
+	void CheckShouldSpawnEnemyIfPlayerInsideSpawner();
 };
