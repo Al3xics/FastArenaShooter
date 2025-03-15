@@ -36,6 +36,8 @@ void AFASPlayerController::BeginPlay()
 
 	// Set current health to max health
 	GameMode->CurrentPlayerHealth = GameMode->MaxPlayerHealth;
+
+	GameMode->CheckShouldSpawnEnemyIfPlayerInsideSpawner();
 }
 
 void AFASPlayerController::SetupInputComponent()
@@ -70,8 +72,15 @@ void AFASPlayerController::MoveFunc(const FInputActionValue& Value)
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	// GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, TEXT("Move"));
 
-	GetPawn()->AddMovementInput(GetPawn()->GetActorForwardVector(), MovementVector.X);
-	GetPawn()->AddMovementInput(GetPawn()->GetActorRightVector(), MovementVector.Y);
+	APawn* MyPawn = GetPawn();
+	if (!MyPawn)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("MoveFunc: GetPawn() is NULL"));
+		return;
+	}
+
+	MyPawn->AddMovementInput(GetPawn()->GetActorForwardVector(), MovementVector.X);
+	MyPawn->AddMovementInput(GetPawn()->GetActorRightVector(), MovementVector.Y);
 }
 
 void AFASPlayerController::JumpFunc(const FInputActionValue& Value)
@@ -92,9 +101,17 @@ void AFASPlayerController::LookFunc(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 	// GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, TEXT("Look"));
+
+	APawn* MyPawn = GetPawn();
+	if (!MyPawn)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("LookFunc: GetPawn() is NULL"));
+		return;
+	}
 	
-	GetPawn()->AddControllerYawInput(LookAxisVector.X * MouseSensitivity);
-	GetPawn()->AddControllerPitchInput(LookAxisVector.Y * MouseSensitivity);
+	MyPawn->AddControllerYawInput(LookAxisVector.X * MouseSensitivity);
+	MyPawn->AddControllerPitchInput(LookAxisVector.Y * MouseSensitivity);
+	
 }
 
 void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
@@ -105,6 +122,7 @@ void AFASPlayerController::PossessFunc(const FInputActionValue& Value)
 	// Else (OtherCharacter not null), then possess enemy
 	if (OtherCharacter == nullptr && Enemy)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("PossessFunc"));
 		FVector TestSpawnLocation = FVector(Enemy->GetActorLocation() + (Enemy->GetActorForwardVector() * DistanceToSpawn));
 		TArray<AActor*> ActorsToIgnore;
 		FHitResult OutHit;
@@ -189,6 +207,8 @@ void AFASPlayerController::PossessEnemy()
 	{
 		OldFASPlayer->Destroy();
 	}
+
+	GameMode->CheckShouldSpawnEnemyIfPlayerInsideSpawner();
 }
 
 void AFASPlayerController::PossessPlayer()
@@ -207,6 +227,7 @@ void AFASPlayerController::PossessPlayer()
 
 	Possess(SpawnedPlayerActor);
 	SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(true, true);
+	GameMode->CheckShouldSpawnEnemyIfPlayerInsideSpawner();
 }
 
 void AFASPlayerController::PossessPlayerAfterEnemyDeath()
@@ -241,10 +262,10 @@ void AFASPlayerController::PossessPlayerAfterEnemyDeath()
 		const FVector PlayerSpawnScale = FVector(Enemy->GetCapsuleComponent()->GetRelativeTransform().GetScale3D());
 		const FTransform PlayerTransform = UKismetMathLibrary::MakeTransform(PlayerSpawnLocation, PlayerSpawnRotation, PlayerSpawnScale);
 
-		FActorSpawnParameters* SpawnParams = new FActorSpawnParameters();
-		SpawnParams->SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
-		SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, *SpawnParams);
+		SpawnedPlayerActor = GetWorld()->SpawnActor<AFASPlayer>(MyActorClass, PlayerTransform, SpawnParams);
 		SpawnedPlayerActor->GetCapsuleComponent()->SetVisibility(false, true);
 		MoveCameraInDirectionOfPossession(SpawnedPlayerActor, true);
 	}
