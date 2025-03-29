@@ -60,6 +60,7 @@ bool AFASEnemyBase::CheckIsEnemyDead()
 	{
 		bIsEnemyDead = true;
 		SpawnerWhereEnemySpawned->TotalEnemy--;
+		PlayerController->bCanPossessPawn = false;
 	}
 
 	return bIsEnemyDead;

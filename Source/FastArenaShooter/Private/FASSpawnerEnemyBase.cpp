@@ -53,11 +53,11 @@ void AFASSpawnerEnemyBase::SpawnEnemy()
 		FVector RandomSpawnLocation;
 		UNavigationSystemV1::K2_GetRandomReachablePointInRadius(GetWorld(), GetActorLocation(), RandomSpawnLocation, SphereCollision->GetScaledSphereRadius());
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = CollisionHandlingOverride;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		AFASEnemyBase* EnemyBase = GetWorld()->SpawnActor<AFASEnemyBase>(EnemyClassToSpawn, RandomSpawnLocation, FRotator(0, 0, 0), SpawnParams);
-		if (!EnemyBase) // Pourquoi ???????? Des fois EnemyBase est null sans aucune raison... J'aimerais bien une explication...
-			return;
+		// if (!EnemyBase)
+		// 	return;
 
 		EnemyBase->SpawnerWhereEnemySpawned = this;
 

@@ -6,7 +6,6 @@
 #include "AIController.h"
 #include "FASPlayer.h"
 #include "GameFramework/GameModeBase.h"
-#include "Struct/FASEnemySpawnSettings.h"
 #include "FASGameMode.generated.h"
 
 class AFASEnemyBase;
