@@ -71,7 +71,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="Player Info", meta=(ToolTip="Object types to ignore when making line trace to check no obstable in front when unpossessing."))
 	TArray <TEnumAsByte<EObjectTypeQuery>> ObjectTypesToIgnore;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Player Info")
 	bool bCanPossessPawn = true;
 
 	UPROPERTY()
@@ -109,5 +109,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Camera")
 	void MoveCameraInDirectionOfPossession(AFASCharacterBase* PawnToPossess, bool DestroyCurrentActor);
-	
+
+	UFUNCTION()
+	void SpawnPlayer(const AFASEnemyBase* Enemy);
 };

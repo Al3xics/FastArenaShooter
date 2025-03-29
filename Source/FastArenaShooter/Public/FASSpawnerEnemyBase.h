@@ -52,9 +52,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
 	AActor* Waypoint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawner")
-	ESpawnActorCollisionHandlingMethod CollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
 	UPROPERTY()
 	FTimerHandle SpawnerTimerHandle;
 
