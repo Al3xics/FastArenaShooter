@@ -219,8 +219,10 @@ void AFASPlayerController::PossessPlayerAfterEnemyDeath()
 	
 	// If   : Player
 	// Else : Enemy
-	if (OtherCharacter == nullptr && Enemy)
+	if (Enemy)
 	{
+		bCanPossessPawn = false;
+		OtherCharacter = nullptr;
 		SpawnPlayer(Enemy);
 		MoveCameraInDirectionOfPossession(SpawnedPlayerActor, true);
 	}

@@ -35,22 +35,22 @@ public:
 	float SmoothFocusInterpSpeed = 130.0f;
 	
 		// Enemy 1
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Enemies|Enemy 1")
-	float MaxEnemy1Health = 100.f;
+	UPROPERTY(BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
+	float MaxEnemy1Health;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 1")
 	TSubclassOf<AFASEnemyBase> EnemyType1Class;
 
 		// Enemy 2
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Enemies|Enemy 2")
-	float MaxEnemy2Health = 100.f;
+	UPROPERTY(BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
+	float MaxEnemy2Health ;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Game Logic|Enemies|Enemy 2")
 	TSubclassOf<AFASEnemyBase> EnemyType2Class;
 
 	// Player
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Game Logic|Player")
-	float MaxPlayerHealth = 100.f;
+	UPROPERTY(BlueprintReadWrite, Category="Game Logic|Player")
+	float MaxPlayerHealth;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Game Logic|Player")
 	float CurrentPlayerHealth = 0.f;
