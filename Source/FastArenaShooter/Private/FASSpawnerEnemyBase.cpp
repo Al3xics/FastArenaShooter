@@ -59,24 +59,28 @@ void AFASSpawnerEnemyBase::SpawnEnemy()
 		// if (!EnemyBase)
 		// 	return;
 
-		EnemyBase->SpawnerWhereEnemySpawned = this;
-
-		if (bIsSentinel)
+		if (EnemyBase)
 		{
-			EnemyBase->Tags.Add(Tag);
-		
-			if (Waypoint == nullptr)
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("No Waypoint was added to %s"), *GetName()));
-			else
-				EnemyBase->Waypoint = Waypoint;
+			EnemyBase->OnDestroyed.AddDynamic(this, &AFASSpawnerEnemyBase::OnEnemyDeath);
+			++TotalEnemy;
+			++CurrentAliveEnemies;
+			
+			if (bIsSentinel)
+			{
+				EnemyBase->Tags.Add(Tag);
+			
+				if (Waypoint == nullptr)
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("No Waypoint was added to %s"), *GetName()));
+				else
+					EnemyBase->Waypoint = Waypoint;
+			}
 		}
-		
-		++TotalEnemy;
 	}
 
 	// Stop timer if max enemy reached for this type of enemy
 	if (TotalEnemy >= SpawnSettingsEnemy.MaxEnemy || !IsControlledCharacterInsideBox())
 	{
+		bHasSpawnFinished = true;
 		GetWorld()->GetTimerManager().ClearTimer(SpawnerTimerHandle);
 	}
 	else
@@ -86,6 +90,27 @@ void AFASSpawnerEnemyBase::SpawnEnemy()
 		GetWorld()->GetTimerManager().SetTimer(SpawnerTimerHandle, this, &AFASSpawnerEnemyBase::SpawnEnemy, NewSpawnRate, false);
 	}
 
+}
+
+void AFASSpawnerEnemyBase::OnEnemyDeath(AActor* DestroyedActor)
+{
+	--CurrentAliveEnemies;
+
+	// Check if all enemies are dead after full spawn
+	if (bHasSpawnFinished && CurrentAliveEnemies <= 0)
+	{
+		ResetSpawner();
+	}
+}
+
+void AFASSpawnerEnemyBase::ResetSpawner()
+{
+	TotalEnemy = 0;
+	CurrentAliveEnemies = 0;
+	bHasSpawnFinished = false;
+
+	if (IsControlledCharacterInsideBox())
+		SpawnEnemy();
 }
 
 void AFASSpawnerEnemyBase::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -53,9 +53,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Enemy")
 	AFASPlayerController* PlayerController;
 
-	UPROPERTY()
-	AFASSpawnerEnemyBase* SpawnerWhereEnemySpawned;
-
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Enemy")
 	bool CheckIsEnemyDead();
 };

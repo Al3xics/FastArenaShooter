@@ -62,10 +62,22 @@ public:
 	int TotalEnemy = 0;
 
 	UPROPERTY()
+	int CurrentAliveEnemies = 0;
+
+	UPROPERTY()
+	bool bHasSpawnFinished = false;
+
+	UPROPERTY()
 	AFASPlayerController* PlayerController;
 	
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 	void SpawnEnemy();
+
+	UFUNCTION()
+	void OnEnemyDeath(AActor* DestroyedActor);
+
+	UFUNCTION()
+	void ResetSpawner();
 
 	UFUNCTION()
 	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
