@@ -141,15 +141,18 @@ void AFASPlayerController::CheckCanPossess()
 			if (AFASCharacterBase* FASCharacterBase = Cast<AFASCharacterBase>(OutHit.GetActor()))
 			{
 				OtherCharacter = FASCharacterBase;
+				LookingAtCharacter(FASCharacterBase);
 			}
 			else
 			{
 				OtherCharacter = nullptr;
+				NotLookingAtCharacter();
 			}
 		}
 		else
 		{
 			OtherCharacter = nullptr;
+			NotLookingAtCharacter();
 		}
 	}
 }
