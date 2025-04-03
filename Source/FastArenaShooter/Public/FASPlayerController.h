@@ -115,4 +115,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Controller")
 	void LookingAtCharacter(AFASCharacterBase* CharacterYouLookAt);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Controller")
+	void NotLookingAtCharacter();
 };

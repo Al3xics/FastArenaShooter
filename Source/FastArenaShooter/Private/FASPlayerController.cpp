@@ -146,11 +146,13 @@ void AFASPlayerController::CheckCanPossess()
 			else
 			{
 				OtherCharacter = nullptr;
+				NotLookingAtCharacter();
 			}
 		}
 		else
 		{
 			OtherCharacter = nullptr;
+			NotLookingAtCharacter();
 		}
 	}
 }
