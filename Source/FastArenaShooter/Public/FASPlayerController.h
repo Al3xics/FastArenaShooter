@@ -112,4 +112,7 @@ public:
 
 	UFUNCTION()
 	void SpawnPlayer(const AFASEnemyBase* Enemy);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Controller")
+	void LookingAtCharacter(AFASCharacterBase* CharacterYouLookAt);
 };
