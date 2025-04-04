@@ -59,7 +59,6 @@ bool AFASEnemyBase::CheckIsEnemyDead()
 	if (CurrentEnemyHealth <= 0.f)
 	{
 		bIsEnemyDead = true;
-		PlayerController->bCanPossessPawn = false;
 	}
 
 	return bIsEnemyDead;
