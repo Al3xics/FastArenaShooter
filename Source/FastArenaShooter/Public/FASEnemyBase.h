@@ -32,9 +32,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Game")
 	AFASGameMode* GameMode = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Enemy")
-	FVector CameraRelativeLocationInGame = FVector(20,0,60);
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Enemy")
 	float MaxEnemyHealth;
 

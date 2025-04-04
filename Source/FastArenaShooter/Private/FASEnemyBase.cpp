@@ -12,7 +12,6 @@ AFASEnemyBase::AFASEnemyBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	FirstPersonCameraComponent->SetRelativeLocation(CameraRelativeLocationInGame);
 }
 
 // Called when the game starts or when spawned
