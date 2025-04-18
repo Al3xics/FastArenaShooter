@@ -53,7 +53,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player Info")
 	AFASCharacterBase* ControlledCharacter;
 
-	UPROPERTY(EditAnywhere, Category="Player Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player Info")
 	float MouseSensitivity = 0.5f;
 
 	UPROPERTY(EditAnywhere, Category="Player Info")
