@@ -4,7 +4,8 @@
 ![Genre](https://img.shields.io/badge/Genre-Fast%20Arena%20Shooter-purple)
 ![Platform](https://img.shields.io/badge/Platform-PC-blue)
 
-[Onryō - Intro](https://youtu.be/Z4lanWCPNc0)
+[**Onryō - Intro**](https://youtu.be/Z4lanWCPNc0)
+[**Play the game on itch.io**](https://al3xics.itch.io/onryo)
 
 ## Game Overview
 
@@ -12,12 +13,6 @@
 Players take on the role of a vengeful spirit capable of **possessing enemies**, turning their own bodies and weapons against their allies.
 
 Set in **feudal Japan**, the game blends **dark, macabre themes** with **slightly retro visuals**, creating a brutal and oppressive atmosphere designed for **midcore to hardcore players** seeking a fast-paced and demanding challenge.
-
-<br>
-
-## ⬇Download
-
-[**Play the game on itch.io**](https://al3xics.itch.io/onryo)
 
 <br>
 
