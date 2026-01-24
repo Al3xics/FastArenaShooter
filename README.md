@@ -4,8 +4,8 @@
 ![Genre](https://img.shields.io/badge/Genre-Fast%20Arena%20Shooter-purple)
 ![Platform](https://img.shields.io/badge/Platform-PC-blue)
 
-[**Onryō - Intro**](https://youtu.be/Z4lanWCPNc0)
-[**Play the game on itch.io**](https://al3xics.itch.io/onryo)
+[**Onryō - Intro**](https://youtu.be/Z4lanWCPNc0)  
+[**Play the game on itch.io**](https://al3xics.itch.io/onryo)  
 
 ## Game Overview
 
